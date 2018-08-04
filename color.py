@@ -6,7 +6,7 @@ c = Canvas(root, width=1200, height=700, bg='white')
 c.pack()
 
 def begin():
-
+    c.delete("all")
     beginning = c.create_text(600,350, font=('arial', '50'), text='Press SPACE To Start', fill='black')
 
     def start(event):
@@ -79,20 +79,27 @@ def begin():
         clouds = [cloud_1, cloud_2, cloud_3, cloud_4, cloud_5, cloud_6, cloud_7, cloud_8, cloud_9]
         
         block = c.create_rectangle(1190, 620, 1200, 630, fill='black', outline='black', state='hidden')
+        init_block_coords = c.find_overlapping(c.coords(block)[0],c.coords(block)[1],c.coords(block)[2],c.coords(block)[3])
 
+        death_time = 0
+        
         while alive:
             play_time = time.clock()
+            elapsed = play_time - death_time
             f = c.find_overlapping(c.coords(player)[0],c.coords(player)[1],c.coords(player)[2],c.coords(player)[3])
-            b = c.find_overlapping(c.coords(block)[0],c.coords(block)[1],c.coords(block)[2],c.coords(block)[3])
-            
-            if play_time > 2 and play_time < 2.5:
+            if elapsed > 2:
+                current_block_coords = c.find_overlapping(c.coords(block)[0],c.coords(block)[1],c.coords(block)[2],c.coords(block)[3])
+
                 c.itemconfig(block, state='normal')
-                print(b)
-                if b != (15,):
-                    alive = False
+                for i in current_block_coords:
+                    for g in f:
+                        if g == i:
+                            alive = False
                 c.move(block, -6, 0)
                 c.update()
-            
+            if c.coords(block)[0] <= 100:
+                c.delete(block)
+                
             if right and c.coords(player)[0] <=780:
                 c.move(player, 3, 0)
                 c.delete(ground)
@@ -143,9 +150,16 @@ def begin():
                 
             c.update()
 
+        def play_again(event):
+            nonlocal elapsed
+            death_time = time.clock() - elapsed
+            c.delete("all")
+            begin()
 
-
-        
+        if alive == False:
+            c.create_text(600,350, font=('arial', '50'), text='Press "R" to restart', fill='black')
+            root.bind('<r>', play_again)
+            
     root.bind('<space>', start)
 
 
