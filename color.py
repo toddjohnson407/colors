@@ -78,10 +78,12 @@ def begin():
         
         clouds = [cloud_1, cloud_2, cloud_3, cloud_4, cloud_5, cloud_6, cloud_7, cloud_8, cloud_9]
         
-        block = c.create_rectangle(1190, 620, 1200, 630, fill='black', outline='black', state='hidden')
+        block = c.create_rectangle(1190, 630, 1200, 640, fill='black', outline='black', state='hidden')
         init_block_coords = c.find_overlapping(c.coords(block)[0],c.coords(block)[1],c.coords(block)[2],c.coords(block)[3])
 
         death_time = 0
+
+        block_left = True
         
         while alive:
             play_time = time.clock()
@@ -89,16 +91,24 @@ def begin():
             f = c.find_overlapping(c.coords(player)[0],c.coords(player)[1],c.coords(player)[2],c.coords(player)[3])
             if elapsed > 2:
                 current_block_coords = c.find_overlapping(c.coords(block)[0],c.coords(block)[1],c.coords(block)[2],c.coords(block)[3])
-
                 c.itemconfig(block, state='normal')
+                
                 for i in current_block_coords:
                     for g in f:
                         if g == i:
                             alive = False
-                c.move(block, -6, 0)
                 c.update()
-            if c.coords(block)[0] <= 100:
-                c.delete(block)
+                
+                if block_left:
+                    if c.coords(block)[0] <= 100:
+                        block_left = False
+                    else:
+                        c.move(block, -8, 0)
+                else:
+                    if c.coords(block)[0] >= 1100:
+                        block_left = True
+                    else:
+                        c.move(block, 8, 0)
                 
             if right and c.coords(player)[0] <=780:
                 c.move(player, 3, 0)
@@ -121,32 +131,33 @@ def begin():
             if up and c.coords(player)[1] >= 300:
                 if right:
                     time.sleep(.05)
-                    c.move(player, 35, -10)
+                    c.move(player, 35, -50)
                     c.update()
                     time.sleep(.05)
-                    c.move(player, 10, -95)
+                    c.move(player, 30, -95)
                     c.update()
                     time.sleep(.05)
                     c.move(player, 40, 10)
                     c.update()
                     time.sleep(.1)
-                    c.move(player, 0, 95)
-                    c.update()
+                    c.move(player, 0, 135)
                     time.sleep(.05)
+                    c.update()
+                    
                 if left:
                     time.sleep(.05)
-                    c.move(player, -35, -10)
+                    c.move(player, -35, -50)
                     c.update()
                     time.sleep(.05)
-                    c.move(player, -10, -95)
+                    c.move(player, -30, -95)
                     c.update()
                     time.sleep(.05)
                     c.move(player, -40, 10)
                     c.update()
                     time.sleep(.1)
-                    c.move(player, 0, 95)
-                    c.update()
+                    c.move(player, 0, 135)
                     time.sleep(.05)
+                    c.update()
                 
             c.update()
 
